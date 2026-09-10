@@ -1,11 +1,18 @@
-function TaskCard(props) {
+function TaskCard({ title, description, status, onToggle }) {
+
     return (
         <div className="task-card">
-            <h3>{props.title}</h3>
 
-            <p>{props.description}</p>
+            <h3>{title}</h3>
 
-            <p> {props.status}</p>
+            <p>{description}</p>
+
+            <p>Status: {status}</p>
+
+            <button onClick={onToggle}>
+                Mark as {status === "Completed" ? "Pending" : "Completed"}
+            </button>
+
         </div>
     );
 }

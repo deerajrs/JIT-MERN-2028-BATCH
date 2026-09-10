@@ -1,54 +1,117 @@
 import StatCard from "./StatCard";
 import TaskCard from "./TaskCard";
+import AddTask from "./AddTask";
+import { useState } from "react";
 
 function DashBoard() {
 
-    const tasks = [
+    const [tasks, setTasks] = useState([
         {
             id: 1,
-            title: "Learn React",
+            topic: "Learn React",
             description: "Understanding Components",
-            status: "In Progress"
-        },
-        {
-            id: 2,
-            title: "Learn JavaScript",
-            description: "Understanding Async/Await",
             status: "Completed"
         },
         {
+            id: 2,
+            topic: "Learn JavaScript",
+            description: "Understanding Async/Await",
+            status: "Pending"
+        },
+        {
             id: 3,
-            title: "Build MERN Project",
-            description: "Create a full-stack application",
-            status: "Not Started"
+            topic: "Learn MongoDB",
+            description: "Database",
+            status: "Completed"
         },
         {
             id: 4,
-            title: "Learn MongoDB",
-            description: "Understanding Database and CRUD Operations",
-            status: "Not Started"
+            topic: "Learn SQL",
+            description: "Database",
+            status: "Completed"
         }
-    ];
+    ]);
+
+    function toggleTask(id) {
+
+        setTasks(
+            tasks.map((task) => {
+
+                if (task.id === id) {
+
+                    return {
+                        ...task,
+                        status:
+                            task.status === "Completed"
+                                ? "Pending"
+                                : "Completed"
+                    };
+                }
+
+                return task;
+            })
+        );
+    }
+
+    function addTask(newTask) {
+
+        setTasks([
+            ...tasks,
+            {
+                id: tasks.length + 1,
+                topic: newTask.title,
+                description: newTask.description,
+                status: "Pending"
+            }
+        ]);
+    }
 
     return (
         <main>
 
             <div className="stats-container">
-                <StatCard title="Total Tasks" value="4" />
-                <StatCard title="Completed" value="1" />
-                <StatCard title="Pending" value="3" />
+
+                <StatCard
+                    title="Total Tasks"
+                    value={tasks.length}
+                />
+
+                <StatCard
+                    title="Completed"
+                    value={
+                        tasks.filter(
+                            (task) => task.status === "Completed"
+                        ).length
+                    }
+                />
+
+                <StatCard
+                    title="Pending"
+                    value={
+                        tasks.filter(
+                            (task) => task.status === "Pending"
+                        ).length
+                    }
+                />
+
             </div>
+
+            <AddTask onAddTask={addTask} />
 
             <h2>Recent Tasks</h2>
 
             <div className="tasks-container">
 
                 {tasks.map((task) => (
-                    <TaskCard key={task.id}
-                        title={task.title}
+
+                    <TaskCard
+                        key={task.id}
+                        title={task.topic}
                         description={task.description}
                         status={task.status}
+                        onToggle={() => toggleTask(task.id)}
                     />
+
                 ))}
 
             </div>

@@ -1,148 +1,157 @@
-
-/* ================================
-   GLOBAL
-================================ */
-
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #f5f7fb;
-    color: #1e293b;
+
+    background: linear-gradient(
+        135deg,
+        #dff1ff,
+        #cfe7f7
+    );
+
+    color: #243447;
+
+    min-height: 100vh;
 }
 
 
-/* ================================
+/* =========================
    NAVBAR
-================================ */
+========================= */
 
 nav {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    color: white;
+    height: 70px;
 
-    padding: 18px 40px;
+    padding: 0 45px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.25);
+    background: #ffffff;
+
+    border-bottom: 1px solid #c9dce9;
+
+    box-shadow: 0 3px 12px rgba(40, 70, 95, 0.10);
 }
 
 nav h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 23px;
+
+    font-weight: 650;
+
+    color: #24527a;
 }
 
 .nav-links {
     display: flex;
-    gap: 30px;
+
+    gap: 8px;
 }
 
 .nav-links span {
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
+    padding: 9px 17px;
 
-    padding: 8px 14px;
+    color: #526b7d;
+
     border-radius: 8px;
 
-    transition: 0.3s;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
 }
 
 .nav-links span:hover {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateY(-2px);
+    background: #e4f2fc;
+
+    color: #24527a;
 }
 
 
-/* ================================
+/* =========================
    WELCOME
-================================ */
+========================= */
 
 .welcome {
-    margin: 30px 30px 10px;
+    margin: 35px 40px 28px;
 
-    padding: 30px;
+    padding: 32px 38px;
 
-    background: linear-gradient(
-        135deg,
-        #eef2ff,
-        #f5f3ff
-    );
+    background: #eaf6ff;
 
-    border-radius: 18px;
+    border: 1px solid #c3ddec;
 
-    border: 1px solid #e0e7ff;
+    border-radius: 16px;
 
-    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.08);
+    box-shadow: 0 6px 18px rgba(50, 90, 120, 0.09);
 }
 
 .welcome h1 {
-    margin: 0;
+    font-size: 30px;
 
-    font-size: 32px;
+    font-weight: 650;
 
-    color: #312e81;
+    color: #234b6f;
 }
 
 
-/* ================================
-   DASHBOARD
-================================ */
+/* =========================
+   MAIN
+========================= */
 
 main {
-    padding: 20px 30px 50px;
-}
-
-main > h1 {
-    font-size: 28px;
-    margin-bottom: 25px;
-    color: #1e1b4b;
+    padding: 0 40px 60px;
 }
 
 
-/* ================================
-   STAT CARDS
-================================ */
+/* =========================
+   STATISTICS
+========================= */
 
 .stats-container {
-    display: flex;
+    display: grid;
 
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
 
-    margin-bottom: 40px;
-
-    flex-wrap: wrap;
+    gap: 22px;
 }
 
 .stat-card {
     position: relative;
 
-    background: white;
+    padding: 26px 28px;
 
-    width: 190px;
+    min-height: 135px;
 
-    padding: 22px;
+    background: #ffffff;
 
-    border-radius: 16px;
+    border: 1px solid #cbdde9;
 
-    border: 1px solid #e5e7eb;
+    border-radius: 14px;
 
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 18px rgba(50, 80, 105, 0.09);
 
-    transition: all 0.3s ease;
+    transition: 0.25s ease;
 
     overflow: hidden;
 }
 
+.stat-card:hover {
+    transform: translateY(-4px);
 
-/* Decorative top line */
+    box-shadow: 0 12px 25px rgba(50, 80, 105, 0.14);
+
+    border-color: #a9c8da;
+}
+
+
+/* Top accent */
 
 .stat-card::before {
     content: "";
@@ -155,61 +164,63 @@ main > h1 {
     width: 100%;
     height: 4px;
 
-    background: linear-gradient(
-        90deg,
-        #4f46e5,
-        #9333ea
-    );
+    background: #4f8fbf;
 }
 
-.stat-card:hover {
-    transform: translateY(-8px);
 
-    box-shadow:
-        0 15px 30px rgba(79, 70, 229, 0.15);
+/* Completed */
+
+.stat-card:nth-child(2)::before {
+    background: #55a47f;
 }
+
+
+/* Pending */
+
+.stat-card:nth-child(3)::before {
+    background: #d4a34d;
+}
+
 
 .stat-card h3 {
-    margin: 5px 0 15px;
+    color: #718596;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    color: #64748b;
-
-    font-weight: 600;
+    letter-spacing: 0.8px;
 
     text-transform: uppercase;
 
-    letter-spacing: 0.5px;
+    margin-bottom: 14px;
 }
 
 .stat-card h2 {
-    margin: 0;
+    color: #29465f;
 
-    font-size: 32px;
+    font-size: 38px;
 
-    color: #4f46e5;
-
-    font-weight: 700;
+    font-weight: 650;
 }
 
 
-/* ================================
-   RECENT TASKS TITLE
-================================ */
+/* =========================
+   RECENT TASKS
+========================= */
 
 main > h2 {
-    font-size: 22px;
+    margin: 40px 0 20px;
 
-    margin-bottom: 20px;
+    color: #29465f;
 
-    color: #1e293b;
+    font-size: 23px;
+
+    font-weight: 650;
 }
 
 
-/* ================================
+/* =========================
    TASK CONTAINER
-================================ */
+========================= */
 
 .tasks-container {
     display: flex;
@@ -220,37 +231,38 @@ main > h2 {
 }
 
 
-/* ================================
+/* =========================
    TASK CARD
-================================ */
+========================= */
 
 .task-card {
     position: relative;
 
-    background: white;
+    padding: 22px 26px 22px 30px;
 
-    padding: 20px 25px;
+    background: #ffffff;
 
-    border-radius: 14px;
+    border: 1px solid #cbdde9;
 
-    border: 1px solid #e5e7eb;
+    border-radius: 13px;
 
-    display: flex;
+    box-shadow: 0 5px 15px rgba(50, 80, 105, 0.08);
 
-    justify-content: space-between;
-
-    align-items: center;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.05);
-
-    transition: all 0.3s ease;
+    transition: 0.25s ease;
 
     overflow: hidden;
 }
 
+.task-card:hover {
+    transform: translateX(4px);
 
-/* Purple side indicator */
+    box-shadow: 0 10px 22px rgba(50, 80, 105, 0.12);
+
+    border-color: #aac9da;
+}
+
+
+/* Left accent */
 
 .task-card::before {
     content: "";
@@ -258,61 +270,141 @@ main > h2 {
     position: absolute;
 
     left: 0;
-    top: 0;
+    top: 14px;
 
-    width: 5px;
-    height: 100%;
+    width: 4px;
+    height: calc(100% - 28px);
 
-    background: linear-gradient(
-        180deg,
-        #4f46e5,
-        #9333ea
-    );
+    background: #5a96bd;
+
+    border-radius: 0 4px 4px 0;
 }
 
-.task-card:hover {
-    transform: translateX(8px);
-
-    border-color: #c7d2fe;
-
-    box-shadow:
-        0 10px 25px rgba(79, 70, 229, 0.12);
-}
 
 .task-card h3 {
-    margin: 0;
+    color: #2d4b63;
 
-    font-size: 17px;
+    font-size: 18px;
 
-    color: #1e293b;
+    font-weight: 650;
+
+    margin-bottom: 7px;
 }
 
 .task-card p {
-    margin: 5px 0 0;
-
-    color: #64748b;
+    color: #718394;
 
     font-size: 14px;
+
+    margin-top: 6px;
 }
 
 
-/* ================================
-   RESPONSIVE DESIGN
-================================ */
+/* =========================
+   STATUS
+========================= */
 
-@media (max-width: 700px) {
+.task-card p:last-of-type {
+    display: inline-block;
+
+    margin-top: 12px;
+
+    padding: 6px 12px;
+
+    border-radius: 6px;
+
+    background: #edf6fc;
+
+    color: #477493;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================
+   TOGGLE BUTTON
+========================= */
+
+.task-card button {
+    margin-top: 14px;
+
+    padding: 8px 15px;
+
+    border: 1px solid #b5ccdc;
+
+    border-radius: 7px;
+
+    background: #f4f9fd;
+
+    color: #35627f;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.task-card button:hover {
+    background: #e3f1fa;
+
+    border-color: #8fb1c7;
+
+    transform: translateY(-1px);
+}
+
+.task-card button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
 
     nav {
-        padding: 15px 20px;
+        padding: 0 22px;
     }
 
-    .nav-links {
-        gap: 10px;
+    .stats-container {
+        grid-template-columns: 1fr;
     }
 
     .welcome {
-        margin: 20px;
+        margin: 25px 20px;
+    }
 
+    main {
+        padding: 0 20px 40px;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    nav {
+        height: auto;
+
+        padding: 18px 20px;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+
+        justify-content: center;
+    }
+
+    .welcome {
         padding: 25px;
     }
 
@@ -320,15 +412,7 @@ main > h2 {
         font-size: 25px;
     }
 
-    main {
-        padding: 15px 20px 40px;
-    }
-
-    .stats-container {
-        flex-direction: column;
-    }
-
-    .stat-card {
-        width: 100%;
+    main > h2 {
+        font-size: 21px;
     }
 }
