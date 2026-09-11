@@ -4,7 +4,6 @@ import AddTask from "./AddTask";
 import { useState } from "react";
 
 function DashBoard() {
-
     const [tasks, setTasks] = useState([
         {
             id: 1,
@@ -33,12 +32,9 @@ function DashBoard() {
     ]);
 
     function toggleTask(id) {
-
         setTasks(
             tasks.map((task) => {
-
                 if (task.id === id) {
-
                     return {
                         ...task,
                         status:
@@ -54,16 +50,20 @@ function DashBoard() {
     }
 
     function addTask(newTask) {
+        const task = {
+            id: Date.now(),
+            topic: newTask.title,
+            description: newTask.description,
+            status: "Pending"
+        };
 
-        setTasks([
-            ...tasks,
-            {
-                id: tasks.length + 1,
-                topic: newTask.title,
-                description: newTask.description,
-                status: "Pending"
-            }
-        ]);
+        setTasks([...tasks, task]);
+    }
+
+    function deleteTask(id) {
+        setTasks(
+            tasks.filter((task) => task.id !== id)
+        );
     }
 
     return (
@@ -103,15 +103,15 @@ function DashBoard() {
             <div className="tasks-container">
 
                 {tasks.map((task) => (
-
                     <TaskCard
                         key={task.id}
+                        id={task.id}
                         title={task.topic}
                         description={task.description}
                         status={task.status}
                         onToggle={() => toggleTask(task.id)}
+                        onDelete={() => deleteTask(task.id)}
                     />
-
                 ))}
 
             </div>
