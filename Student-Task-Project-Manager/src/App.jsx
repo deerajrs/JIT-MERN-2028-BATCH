@@ -1,106 +1,87 @@
 import "./App.css";
 import Navbar from "./components/Navbar";
-import DashBoard from "./components/DashBoard";
+import Dashboard from "./components/Dashboard";
 import Tasks from "./components/Tasks";
 import TaskDetails from "./components/TaskDetails";
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useState,useEffect } from "react";
+
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      topic: "Learn React",
-      description: "Understanding Components",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      topic: "Learn JavaScript",
-      description: "Understanding Async/Await",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      topic: "Learn MongoDB",
-      description: "Database",
-      status: "Completed",
-    },
-    {
-      id: 4,
-      topic: "Learn SQL",
-      description: "Database",
-      status: "Completed",
-    },
-  ]);
+    const [tasks, setTasks] = useState([
+        {
+            id: 1,
+            title: "Learn React",
+            description: "Understanding Components",
+            status: "Completed"
+        },
+        {
+            id: 2,
+            title: "Learn JavaScript",
+            description: "Understanding Async/Await",
+            status: "Pending"
+        },
+        {
+            id: 3,
+            title: "Learn MongoDB",
+            description: "Database",
+            status: "Completed"
+        },
+        {
+            id: 4,
+            title: "Learn SQL",
+            description: "Database",
+            status: "Completed"
+        }
+    ]);
+useEffect(() => {
+    fetch("http://localhost:5000/api/tasks")
+        .then((response) => response.json())
+        .then((data) => {
+            setTasks(data);
+            
+        })
+        
+}, []);
 
-  // Toggle task status
-  function toggleTask(id) {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              status:
-                task.status === "Completed"
-                  ? "Pending"
-                  : "Completed",
-            }
-          : task
-      )
+
+    return (
+        <div>
+            <Navbar />
+
+            <Routes>
+
+                <Route
+                    path="/"
+                    element={
+                        <Dashboard
+                            tasks={tasks}
+                            setTasks={setTasks}
+                        />
+                    }
+                />
+
+                <Route
+                    path="/tasks"
+                    element={
+                        <Tasks
+                            tasks={tasks}
+                        />
+                    }
+                />
+
+                <Route
+                    path="/tasks/:id"
+                    element={
+                        <TaskDetails
+                            tasks={tasks}
+                        />
+                    }
+                />
+
+            </Routes>
+        </div>
     );
-  }
-
-  // Add a new task
-  function addTask(newTask) {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-  }
-
-  // Delete a task
-  function deleteTask(id) {
-    setTasks((prevTasks) =>
-      prevTasks.filter((task) => task.id !== id)
-    );
-  }
-
-  return (
-    <div>
-      <Navbar />
-
-      <Routes>
-        {/* Dashboard */}
-        <Route
-          path="/"
-          element={
-            <DashBoard
-              tasks={tasks}
-              onAddTask={addTask}
-              onToggleTask={toggleTask}
-              onDeleteTask={deleteTask}
-            />
-          }
-        />
-
-        {/* All Tasks */}
-        <Route
-          path="/tasks"
-          element={
-            <Tasks
-              tasks={tasks}
-              onToggleTask={toggleTask}
-              onDeleteTask={deleteTask}
-            />
-          }
-        />
-
-        {/* Task Details */}
-        <Route
-          path="/tasks/:id"
-          element={<TaskDetails tasks={tasks} />}
-        />
-      </Routes>
-    </div>
-  );
 }
 
 export default App;

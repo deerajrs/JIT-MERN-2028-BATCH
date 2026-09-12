@@ -1,23 +1,35 @@
 import { Link } from "react-router-dom";
 
-function TaskCard(props) {
+function TaskCard({
+    id,
+    title,
+    description,
+    status,
+    onToggle,
+    onDelete
+}) {
     return (
         <div className="task-card">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
 
-            <p>{props.description}</p>
+            <p>{description}</p>
 
-            <p>{props.status}</p>
+            <p>Status: {status}</p>
 
-            <button onClick={props.onToggle}>
-                Change Status
+            <button onClick={onToggle}>
+                Mark as {
+                    status === "Completed"
+                        ? "Pending"
+                        : "Completed"
+                }
             </button>
 
-            <button onClick={props.onDelete}>
+            <button onClick={onDelete}>
                 Delete
             </button>
-            <Link to={`/tasks/${props.id}`}>
-                View Details 
+
+            <Link to={`/tasks/${id}`}>
+                View Details
             </Link>
         </div>
     );
