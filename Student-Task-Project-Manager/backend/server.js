@@ -1,4 +1,3 @@
-
 // Bring Express in Node.js
 const express = require("express");
 const cors = require("cors");
@@ -37,6 +36,21 @@ app.get("/api/tasks", (req, res) => {
     res.json(tasks);
 });
 
+// GET single task by ID
+app.get("/api/tasks/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const task = tasks.find((task) => task.id === id);
+
+    if (!task) {
+        return res.status(404).json({
+            message: "Task not found"
+        });
+    }
+
+    res.json(task);
+});
+
 // Testing backend
 app.get("/", (req, res) => {
     res.send("Backend is working!!");
@@ -49,7 +63,7 @@ app.post("/api/tasks", (req, res) => {
         id: tasks.length + 1,
         title: req.body.title,
         description: req.body.description,
-        status: req.body.status || "pending"
+        status: req.body.status || "Pending"
     };
 
     tasks.push(newTask);
@@ -60,9 +74,11 @@ app.post("/api/tasks", (req, res) => {
 // DELETE - Delete task
 app.delete("/api/tasks/:id", (req, res) => {
 
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
 
-    const taskIndex = tasks.findIndex(task => task.id === id);
+    const taskIndex = tasks.findIndex(
+        (task) => task.id === id
+    );
 
     if (taskIndex === -1) {
         return res.status(404).json({
@@ -82,4 +98,3 @@ app.delete("/api/tasks/:id", (req, res) => {
 app.listen(5000, () => {
     console.log("Server Is Running On Port 5000");
 });
-

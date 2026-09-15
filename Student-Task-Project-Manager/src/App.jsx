@@ -8,20 +8,30 @@ import { useState, useEffect } from "react";
 
 function App() {
     const [tasks, setTasks] = useState([]);
+    const [backendError, setBackendError] = useState(false);
 
     // Get tasks from backend
     useEffect(() => {
         fetch("http://localhost:5000/api/tasks")
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Backend server error");
+                }
+
+                return response.json();
+            })
             .then((data) => {
                 setTasks(data);
+                setBackendError(false);
             })
             .catch((error) => {
-                console.error("Error fetching tasks:", error);
+                console.error("Backend Error:", error);
+                setBackendError(true);
+                setTasks([]);
             });
     }, []);
 
-    // Add new task to React state
+    // Add new task
     function handleAddTask(newTask) {
         setTasks((previousTasks) => [
             ...previousTasks,
@@ -33,6 +43,15 @@ function App() {
         <div>
             <Navbar />
 
+            {/* Backend Error Message */}
+            {backendError && (
+                <div className="backend-error">
+                    ❌ Backend server is not running.
+                    <br />
+                    Please start your backend server on port 5000.
+                </div>
+            )}
+
             <Routes>
 
                 <Route
@@ -42,6 +61,7 @@ function App() {
                             tasks={tasks}
                             setTasks={setTasks}
                             onAddTask={handleAddTask}
+                            backendError={backendError}
                         />
                     }
                 />

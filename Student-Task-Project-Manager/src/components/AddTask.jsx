@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 function AddTask(props) {
@@ -9,7 +8,7 @@ function AddTask(props) {
         const newTask = {
             title: title,
             description: description,
-            status: "pending"
+            status: "Pending"
         };
 
         console.log("object:", newTask);
@@ -27,7 +26,7 @@ function AddTask(props) {
 
             console.log("Response:", data);
 
-            // Send the newly created task to App.jsx
+            // Send the new task to Dashboard/App
             props.onAddTask(data);
 
             // Clear input fields
@@ -75,4 +74,3 @@ function AddTask(props) {
 }
 
 export default AddTask;
-
