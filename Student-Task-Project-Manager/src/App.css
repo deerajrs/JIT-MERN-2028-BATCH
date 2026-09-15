@@ -876,3 +876,151 @@ main > h2 {
 .task-actions .delete-btn {
     background: #ef4444;
 }
+/* Tasks Page Only */
+
+.tasks-page {
+    min-height: calc(100vh - 70px);
+    padding: 45px 60px;
+}
+
+.tasks-page h1 {
+    font-size: 36px;
+    color: #1769aa;
+    margin-bottom: 10px;
+}
+
+.tasks-page > p {
+    font-size: 17px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.tasks-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.task-item {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: 0.2s;
+}
+
+.task-item:hover {
+    transform: translateY(-5px);
+}
+
+.task-item h3 {
+    font-size: 21px;
+    color: #1769aa;
+    margin-bottom: 12px;
+}
+
+.task-item p {
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.task-item .status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+@media (max-width: 900px) {
+    .tasks-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .tasks-page {
+        padding: 30px 20px;
+    }
+
+    .tasks-list {
+        grid-template-columns: 1fr;
+    }
+}
+/* Tasks Page */
+
+.tasks-page {
+    min-height: calc(100vh - 70px);
+    padding: 45px 60px;
+}
+
+.tasks-page h1 {
+    font-size: 36px;
+    color: #1769aa;
+    margin-bottom: 10px;
+}
+
+.tasks-page > p {
+    font-size: 17px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.tasks-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.task-item {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: 0.2s;
+}
+
+.task-item:hover {
+    transform: translateY(-5px);
+}
+
+.task-item h3 {
+    font-size: 21px;
+    color: #1769aa;
+    margin-bottom: 12px;
+}
+
+.task-item p {
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.task-item .status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+@media (max-width: 900px) {
+    .tasks-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .tasks-page {
+        padding: 30px 20px;
+    }
+
+    .tasks-list {
+        grid-template-columns: 1fr;
+    }
+}
