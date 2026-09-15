@@ -10,46 +10,35 @@ function Dashboard(props) {
                 if (task.id === id) {
                     return {
                         ...task,
-                        status:
-                            task.status === "Completed"
-                                ? "Pending"
-                                : "Completed"
+                        status: task.status === "Completed"
+                            ? "Pending"
+                            : "Completed"
                     };
                 }
-
                 return task;
             })
         );
     }
 
     function addTask(newTask) {
-        const task = {
-            id: Date.now(),
-            title: newTask.title,
-            description: newTask.description,
-            status: "Pending"
-        };
-
-        props.setTasks([
-            ...props.tasks,
-            task
-        ]);
+        props.setTasks([...props.tasks, newTask]);
     }
 
     function deleteTask(id) {
         props.setTasks(
-            props.tasks.filter(
-                (task) => task.id !== id
-            )
+            props.tasks.filter((task) => task.id !== id)
         );
     }
+
+    // Calculate task counts
+    const totalTasks = props.tasks.length;
 
     const completedTasks = props.tasks.filter(
         (task) => task.status === "Completed"
     ).length;
 
     const pendingTasks = props.tasks.filter(
-        (task) => task.status === "Pending"
+        (task) => task.status === "Pending" || task.status === "pending"
     ).length;
 
     return (
@@ -59,7 +48,7 @@ function Dashboard(props) {
 
                 <StatCard
                     title="Total Tasks"
-                    value={props.tasks.length}
+                    value={totalTasks}
                 />
 
                 <StatCard
@@ -74,9 +63,7 @@ function Dashboard(props) {
 
             </div>
 
-            <AddTask
-                onAddTask={addTask}
-            />
+            <AddTask onAddTask={addTask} />
 
             <h2>Recent Tasks</h2>
 

@@ -1,42 +1,85 @@
-//bring express in Node.js
-const express=require("express")
-const cors=require("cors");
-//create express app using what we imported
-const app=express();
-//use cors middleware to handle request
+
+// Bring Express in Node.js
+const express = require("express");
+const cors = require("cors");
+
+// Create Express app
+const app = express();
+
+// Middleware
 app.use(cors());
- const tasks =[
-        {
-            id: 1,
-            title: "Learn React",
-            description: "Understanding Components",
-            status: "Completed"
-        },
-        {
-            id: 2,
-            title: "Learn JavaScript",
-            description: "Understanding Async/Await",
-            status: "Pending"
-        },
-        {
-            id: 3,
-            title: "Learn MongoDB",
-            description: "Database",
-            status: "Completed"
-        },
-    ];
+app.use(express.json());
 
-app.get("/api/tasks",(req,res)=>{
+// Tasks
+const tasks = [
+    {
+        id: 1,
+        title: "Learn React",
+        description: "Understanding Components",
+        status: "Completed"
+    },
+    {
+        id: 2,
+        title: "Learn JavaScript",
+        description: "Understanding Async/Await",
+        status: "Pending"
+    },
+    {
+        id: 3,
+        title: "Learn MongoDB",
+        description: "Database",
+        status: "Completed"
+    }
+];
+
+// GET all tasks
+app.get("/api/tasks", (req, res) => {
     res.json(tasks);
-
 });
 
-//api route(Testing Backend)
-app.get("/",(req,res)=>{
-    res.send("Backend is working!!")
-    
+// Testing backend
+app.get("/", (req, res) => {
+    res.send("Backend is working!!");
 });
-// start the server and listen to port 5000
-app.listen(5000,()=>{
-    console.log("Server Is Running On Port 5000")
+
+// POST - Add new task
+app.post("/api/tasks", (req, res) => {
+
+    const newTask = {
+        id: tasks.length + 1,
+        title: req.body.title,
+        description: req.body.description,
+        status: req.body.status || "pending"
+    };
+
+    tasks.push(newTask);
+
+    res.status(201).json(newTask);
 });
+
+// DELETE - Delete task
+app.delete("/api/tasks/:id", (req, res) => {
+
+    const id = parseInt(req.params.id);
+
+    const taskIndex = tasks.findIndex(task => task.id === id);
+
+    if (taskIndex === -1) {
+        return res.status(404).json({
+            message: "Task not found"
+        });
+    }
+
+    const deletedTask = tasks.splice(taskIndex, 1);
+
+    res.json({
+        message: "Task deleted successfully",
+        task: deletedTask[0]
+    });
+});
+
+// Start server
+app.listen(5000, () => {
+    console.log("Server Is Running On Port 5000");
+});
+

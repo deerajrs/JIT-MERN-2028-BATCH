@@ -10,11 +10,14 @@ function TaskCard({
 }) {
     return (
         <div className="task-card">
+
             <h3>{title}</h3>
 
             <p>{description}</p>
 
-            <p>Status: {status}</p>
+            <p>
+                Status: {status}
+            </p>
 
             <button onClick={onToggle}>
                 Mark as {
@@ -31,6 +34,7 @@ function TaskCard({
             <Link to={`/tasks/${id}`}>
                 View Details
             </Link>
+
         </div>
     );
 }
