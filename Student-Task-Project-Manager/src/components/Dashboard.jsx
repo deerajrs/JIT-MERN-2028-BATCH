@@ -1,12 +1,33 @@
+import { useEffect, useState } from "react";
 import StatCard from "./StatCard";
 import TaskCard from "./TaskCard";
 import AddTask from "./AddTask";
 
-function Dashboard(props) {
+function Dashboard() {
+
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+
+        fetch("http://localhost:5000/api/tasks")
+            .then((response) => response.json())
+            .then((data) => {
+                setTasks(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching tasks:", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+    }, []);
+
 
     async function toggleTask(id) {
 
-        const task = props.tasks.find(
+        const task = tasks.find(
             (task) => task.id === id
         );
 
@@ -36,16 +57,14 @@ function Dashboard(props) {
 
             const data = await response.json();
 
-            console.log("Update response:", data);
-
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Failed to update task"
+                    data.message || "Update failed"
                 );
             }
 
-            props.setTasks(
-                props.tasks.map((task) => {
+            setTasks(
+                tasks.map((task) => {
 
                     if (task.id === id) {
                         return {
@@ -71,10 +90,11 @@ function Dashboard(props) {
 
     function addTask(newTask) {
 
-        props.setTasks([
-            ...props.tasks,
+        setTasks([
+            ...tasks,
             newTask
         ]);
+
     }
 
 
@@ -91,19 +111,19 @@ function Dashboard(props) {
 
             const data = await response.json();
 
-            console.log(
-                "Delete response:",
-                data
-            );
-
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Failed to delete task"
+                    data.message || "Delete failed"
                 );
             }
 
-            props.setTasks(
-                props.tasks.filter(
+            console.log(
+                "Deleted:",
+                data
+            );
+
+            setTasks(
+                tasks.filter(
                     (task) => task.id !== id
                 )
             );
@@ -119,23 +139,23 @@ function Dashboard(props) {
     }
 
 
-    const totalTasks =
-        props.tasks.length;
+    const totalTasks = tasks.length;
+
+    const completedTasks = tasks.filter(
+        (task) =>
+            task.status === "Completed"
+    ).length;
+
+    const pendingTasks = tasks.filter(
+        (task) =>
+            task.status === "Pending" ||
+            task.status === "pending"
+    ).length;
 
 
-    const completedTasks =
-        props.tasks.filter(
-            (task) =>
-                task.status === "Completed"
-        ).length;
-
-
-    const pendingTasks =
-        props.tasks.filter(
-            (task) =>
-                task.status === "Pending" ||
-                task.status === "pending"
-        ).length;
+    if (loading) {
+        return <h2>Loading tasks...</h2>;
+    }
 
 
     return (
@@ -162,7 +182,12 @@ function Dashboard(props) {
 
 
             <AddTask
-                onAddTask={addTask}
+                onAddTask={(newTask) =>
+                    setTasks([
+                        ...tasks,
+                        newTask
+                    ])
+                }
             />
 
 
@@ -171,7 +196,7 @@ function Dashboard(props) {
 
             <div className="tasks-container">
 
-                {props.tasks.map((task) => (
+                {tasks.map((task) => (
 
                     <TaskCard
                         key={task.id}

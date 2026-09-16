@@ -1,40 +1,56 @@
 import { useState } from "react";
 
-function AddTask(props) {
+function AddTask({ onAddTask }) {
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
     async function handleAddTask() {
+
+        if (!title || !description) {
+            alert("Please enter title and description");
+            return;
+        }
+
         const newTask = {
             title: title,
             description: description,
             status: "Pending"
         };
 
-        console.log("object:", newTask);
-
         try {
-            const response = await fetch("http://localhost:5000/api/tasks", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newTask)
-            });
+
+            const response = await fetch(
+                "http://localhost:5000/api/tasks",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newTask)
+                }
+            );
 
             const data = await response.json();
 
-            console.log("Response:", data);
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to add task"
+                );
+            }
 
-            // Send the new task to Dashboard/App
-            props.onAddTask(data);
+            onAddTask(data);
 
-            // Clear input fields
             setTitle("");
             setDescription("");
 
         } catch (error) {
-            console.error("Error adding task:", error);
+
+            console.error(
+                "Add task error:",
+                error
+            );
+
         }
     }
 
@@ -47,7 +63,9 @@ function AddTask(props) {
                 type="text"
                 placeholder="Enter title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) =>
+                    setTitle(e.target.value)
+                }
             />
 
             <br />
@@ -56,7 +74,9 @@ function AddTask(props) {
                 type="text"
                 placeholder="Enter description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) =>
+                    setDescription(e.target.value)
+                }
             />
 
             <br />
@@ -65,9 +85,13 @@ function AddTask(props) {
                 Add Task
             </button>
 
-            <p>Current title: {title}</p>
+            <p>
+                Current title: {title}
+            </p>
 
-            <p>Current description: {description}</p>
+            <p>
+                Current description: {description}
+            </p>
 
         </div>
     );
