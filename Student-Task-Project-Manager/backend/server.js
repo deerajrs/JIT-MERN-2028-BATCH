@@ -1,15 +1,11 @@
-// Bring Express in Node.js
 const express = require("express");
 const cors = require("cors");
 
-// Create Express app
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Tasks
 const tasks = [
     {
         id: 1,
@@ -28,19 +24,26 @@ const tasks = [
         title: "Learn MongoDB",
         description: "Database",
         status: "Completed"
+    },
+    {
+        id: 4,
+        title: "Learn SQL",
+        description: "Database Queries",
+        status: "Pending"
     }
 ];
 
-// GET all tasks
 app.get("/api/tasks", (req, res) => {
     res.json(tasks);
 });
 
-// GET single task by ID
 app.get("/api/tasks/:id", (req, res) => {
+
     const id = Number(req.params.id);
 
-    const task = tasks.find((task) => task.id === id);
+    const task = tasks.find(
+        (task) => task.id === id
+    );
 
     if (!task) {
         return res.status(404).json({
@@ -51,12 +54,6 @@ app.get("/api/tasks/:id", (req, res) => {
     res.json(task);
 });
 
-// Testing backend
-app.get("/", (req, res) => {
-    res.send("Backend is working!!");
-});
-
-// POST - Add new task
 app.post("/api/tasks", (req, res) => {
 
     const newTask = {
@@ -71,7 +68,35 @@ app.post("/api/tasks", (req, res) => {
     res.status(201).json(newTask);
 });
 
-// DELETE - Delete task
+app.put("/api/tasks/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    const task = tasks.find(
+        (task) => task.id === id
+    );
+
+    if (!task) {
+        return res.status(404).json({
+            message: "Task not found"
+        });
+    }
+
+    if (req.body.title !== undefined) {
+        task.title = req.body.title;
+    }
+
+    if (req.body.description !== undefined) {
+        task.description = req.body.description;
+    }
+
+    if (req.body.status !== undefined) {
+        task.status = req.body.status;
+    }
+
+    res.json(task);
+});
+
 app.delete("/api/tasks/:id", (req, res) => {
 
     const id = Number(req.params.id);
@@ -86,7 +111,10 @@ app.delete("/api/tasks/:id", (req, res) => {
         });
     }
 
-    const deletedTask = tasks.splice(taskIndex, 1);
+    const deletedTask = tasks.splice(
+        taskIndex,
+        1
+    );
 
     res.json({
         message: "Task deleted successfully",
@@ -94,7 +122,12 @@ app.delete("/api/tasks/:id", (req, res) => {
     });
 });
 
-// Start server
+app.get("/", (req, res) => {
+    res.send("Backend is working!!");
+});
+
 app.listen(5000, () => {
-    console.log("Server Is Running On Port 5000");
+    console.log(
+        "Server Is Running On Port 5000"
+    );
 });
