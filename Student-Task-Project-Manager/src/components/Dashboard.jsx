@@ -4,12 +4,10 @@ import TaskCard from "./TaskCard";
 import AddTask from "./AddTask";
 
 function Dashboard() {
-
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         fetch("http://localhost:5000/api/tasks")
             .then((response) => response.json())
             .then((data) => {
@@ -21,14 +19,11 @@ function Dashboard() {
             .finally(() => {
                 setLoading(false);
             });
-
     }, []);
 
-
     async function toggleTask(id) {
-
         const task = tasks.find(
-            (task) => task.id === id
+            (task) => task._id === id
         );
 
         if (!task) {
@@ -41,7 +36,6 @@ function Dashboard() {
                 : "Completed";
 
         try {
-
             const response = await fetch(
                 `http://localhost:5000/api/tasks/${id}`,
                 {
@@ -65,43 +59,20 @@ function Dashboard() {
 
             setTasks(
                 tasks.map((task) => {
-
-                    if (task.id === id) {
-                        return {
-                            ...task,
-                            status: newStatus
-                        };
+                    if (task._id === id) {
+                        return data;
                     }
 
                     return task;
                 })
             );
-
         } catch (error) {
-
-            console.error(
-                "Update error:",
-                error
-            );
-
+            console.error("Update error:", error);
         }
     }
 
-
-    function addTask(newTask) {
-
-        setTasks([
-            ...tasks,
-            newTask
-        ]);
-
-    }
-
-
     async function deleteTask(id) {
-
         try {
-
             const response = await fetch(
                 `http://localhost:5000/api/tasks/${id}`,
                 {
@@ -117,52 +88,40 @@ function Dashboard() {
                 );
             }
 
-            console.log(
-                "Deleted:",
-                data
-            );
-
             setTasks(
                 tasks.filter(
-                    (task) => task.id !== id
+                    (task) => task._id !== id
                 )
             );
-
         } catch (error) {
-
-            console.error(
-                "Delete error:",
-                error
-            );
-
+            console.error("Delete error:", error);
         }
     }
 
+    function addTask(newTask) {
+        setTasks([
+            ...tasks,
+            newTask
+        ]);
+    }
 
     const totalTasks = tasks.length;
 
     const completedTasks = tasks.filter(
-        (task) =>
-            task.status === "Completed"
+        (task) => task.status === "Completed"
     ).length;
 
     const pendingTasks = tasks.filter(
-        (task) =>
-            task.status === "Pending" ||
-            task.status === "pending"
+        (task) => task.status === "Pending"
     ).length;
-
 
     if (loading) {
         return <h2>Loading tasks...</h2>;
     }
 
-
     return (
         <main>
-
             <div className="stats-container">
-
                 <StatCard
                     title="Total Tasks"
                     value={totalTasks}
@@ -177,45 +136,31 @@ function Dashboard() {
                     title="Pending"
                     value={pendingTasks}
                 />
-
             </div>
 
-
             <AddTask
-                onAddTask={(newTask) =>
-                    setTasks([
-                        ...tasks,
-                        newTask
-                    ])
-                }
+                onAddTask={addTask}
             />
-
 
             <h2>Recent Tasks</h2>
 
-
             <div className="tasks-container">
-
                 {tasks.map((task) => (
-
                     <TaskCard
-                        key={task.id}
-                        id={task.id}
+                        key={task._id}
+                        id={task._id}
                         title={task.title}
                         description={task.description}
                         status={task.status}
                         onToggle={() =>
-                            toggleTask(task.id)
+                            toggleTask(task._id)
                         }
                         onDelete={() =>
-                            deleteTask(task.id)
+                            deleteTask(task._id)
                         }
                     />
-
                 ))}
-
             </div>
-
         </main>
     );
 }

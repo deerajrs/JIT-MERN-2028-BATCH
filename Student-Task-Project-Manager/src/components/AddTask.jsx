@@ -1,12 +1,10 @@
 import { useState } from "react";
 
 function AddTask({ onAddTask }) {
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
     async function handleAddTask() {
-
         if (!title || !description) {
             alert("Please enter title and description");
             return;
@@ -19,7 +17,6 @@ function AddTask({ onAddTask }) {
         };
 
         try {
-
             const response = await fetch(
                 "http://localhost:5000/api/tasks",
                 {
@@ -43,20 +40,14 @@ function AddTask({ onAddTask }) {
 
             setTitle("");
             setDescription("");
-
         } catch (error) {
-
-            console.error(
-                "Add task error:",
-                error
-            );
-
+            console.error("Add task error:", error);
+            alert("Failed to add task");
         }
     }
 
     return (
         <div className="add-task">
-
             <h2>Add Task</h2>
 
             <input
@@ -84,15 +75,6 @@ function AddTask({ onAddTask }) {
             <button onClick={handleAddTask}>
                 Add Task
             </button>
-
-            <p>
-                Current title: {title}
-            </p>
-
-            <p>
-                Current description: {description}
-            </p>
-
         </div>
     );
 }
