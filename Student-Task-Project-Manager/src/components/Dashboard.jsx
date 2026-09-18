@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import StatCard from "./StatCard";
 import TaskCard from "./TaskCard";
 import AddTask from "./AddTask";
@@ -7,11 +9,46 @@ function Dashboard() {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        fetch("http://localhost:5000/api/tasks")
-            .then((response) => response.json())
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        fetch("http://localhost:5000/api/tasks", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(async (response) => {
+                const data = await response.json();
+
+                if (response.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+
+                    navigate("/login");
+
+                    return null;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Failed to fetch tasks"
+                    );
+                }
+
+                return data;
+            })
             .then((data) => {
-                setTasks(data);
+                if (Array.isArray(data)) {
+                    setTasks(data);
+                }
             })
             .catch((error) => {
                 console.error("Error fetching tasks:", error);
@@ -19,7 +56,7 @@ function Dashboard() {
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [navigate]);
 
     async function toggleTask(id) {
         const task = tasks.find(
@@ -29,6 +66,8 @@ function Dashboard() {
         if (!task) {
             return;
         }
+
+        const token = localStorage.getItem("token");
 
         const newStatus =
             task.status === "Completed"
@@ -41,9 +80,12 @@ function Dashboard() {
                 {
                     method: "PUT",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify({
+                        title: task.title,
+                        description: task.description,
                         status: newStatus
                     })
                 }
@@ -51,40 +93,56 @@ function Dashboard() {
 
             const data = await response.json();
 
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                navigate("/login");
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Update failed"
+                    data.message || "Failed to update task"
                 );
             }
 
             setTasks(
-                tasks.map((task) => {
-                    if (task._id === id) {
-                        return data;
-                    }
-
-                    return task;
-                })
+                tasks.map((item) =>
+                    item._id === id ? data : item
+                )
             );
+
         } catch (error) {
             console.error("Update error:", error);
         }
     }
 
     async function deleteTask(id) {
+        const token = localStorage.getItem("token");
+
         try {
             const response = await fetch(
                 `http://localhost:5000/api/tasks/${id}`,
                 {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             );
 
             const data = await response.json();
 
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                navigate("/login");
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Delete failed"
+                    data.message || "Failed to delete task"
                 );
             }
 
@@ -93,16 +151,24 @@ function Dashboard() {
                     (task) => task._id !== id
                 )
             );
+
         } catch (error) {
             console.error("Delete error:", error);
         }
     }
 
     function addTask(newTask) {
-        setTasks([
-            ...tasks,
+        setTasks((previousTasks) => [
+            ...previousTasks,
             newTask
         ]);
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        navigate("/login");
     }
 
     const totalTasks = tasks.length;
@@ -121,6 +187,17 @@ function Dashboard() {
 
     return (
         <main>
+            <div className="dashboard-header">
+                <div>
+                    <h1>Task Dashboard</h1>
+                    <p>Manage your tasks</p>
+                </div>
+
+                <button onClick={logout}>
+                    Logout
+                </button>
+            </div>
+
             <div className="stats-container">
                 <StatCard
                     title="Total Tasks"
@@ -138,28 +215,30 @@ function Dashboard() {
                 />
             </div>
 
-            <AddTask
-                onAddTask={addTask}
-            />
+            <AddTask onAddTask={addTask} />
 
             <h2>Recent Tasks</h2>
 
             <div className="tasks-container">
-                {tasks.map((task) => (
-                    <TaskCard
-                        key={task._id}
-                        id={task._id}
-                        title={task.title}
-                        description={task.description}
-                        status={task.status}
-                        onToggle={() =>
-                            toggleTask(task._id)
-                        }
-                        onDelete={() =>
-                            deleteTask(task._id)
-                        }
-                    />
-                ))}
+                {tasks.length === 0 ? (
+                    <p>No tasks available.</p>
+                ) : (
+                    tasks.map((task) => (
+                        <TaskCard
+                            key={task._id}
+                            id={task._id}
+                            title={task.title}
+                            description={task.description}
+                            status={task.status}
+                            onToggle={() =>
+                                toggleTask(task._id)
+                            }
+                            onDelete={() =>
+                                deleteTask(task._id)
+                            }
+                        />
+                    ))
+                )}
             </div>
         </main>
     );

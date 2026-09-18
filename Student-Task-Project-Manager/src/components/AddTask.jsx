@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AddTask({ onAddTask }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+
+    const navigate = useNavigate();
 
     async function handleAddTask() {
         if (!title || !description) {
@@ -10,11 +13,13 @@ function AddTask({ onAddTask }) {
             return;
         }
 
-        const newTask = {
-            title: title,
-            description: description,
-            status: "Pending"
-        };
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Please login first");
+            navigate("/login");
+            return;
+        }
 
         try {
             const response = await fetch(
@@ -22,27 +27,45 @@ function AddTask({ onAddTask }) {
                 {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify(newTask)
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        status: "Pending"
+                    })
                 }
             );
 
             const data = await response.json();
 
+            console.log("Add Task Response:", data);
+
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+
+                alert("Session expired. Please login again.");
+                navigate("/login");
+                return;
+            }
+
             if (!response.ok) {
-                throw new Error(
-                    data.message || "Failed to add task"
-                );
+                alert(data.message || "Failed to add task");
+                return;
             }
 
             onAddTask(data);
 
             setTitle("");
             setDescription("");
+
+            alert("Task added successfully!");
+
         } catch (error) {
-            console.error("Add task error:", error);
-            alert("Failed to add task");
+            console.error("Add Task Error:", error);
+            alert("Unable to connect to backend");
         }
     }
 
@@ -54,12 +77,8 @@ function AddTask({ onAddTask }) {
                 type="text"
                 placeholder="Enter title"
                 value={title}
-                onChange={(e) =>
-                    setTitle(e.target.value)
-                }
+                onChange={(e) => setTitle(e.target.value)}
             />
-
-            <br />
 
             <input
                 type="text"
@@ -69,8 +88,6 @@ function AddTask({ onAddTask }) {
                     setDescription(e.target.value)
                 }
             />
-
-            <br />
 
             <button onClick={handleAddTask}>
                 Add Task
